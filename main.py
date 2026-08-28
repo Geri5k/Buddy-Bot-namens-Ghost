@@ -42,7 +42,7 @@ gemini_client = genai.Client(api_key=gemini_key)
 
 def frage_gemini(frage):
     antwort_gemini = gemini_client.models.generate_content(
-        model="gemini-3.7-flash",
+        model="gemini-3.6-flash",
         contents=frage
     )
     return antwort_gemini.text
