@@ -20,25 +20,29 @@ else:
 
 #                                    Groq Client
 from groq import Groq
-
 groq_client = Groq(api_key=groq_key)
 
-antwort_groq = groq_client.chat.completions.create(
-    model="openai/gpt-oss-20b",
-    messages=[{"role": "user", "content": input("Deine Frage: ") }]
-)
+def frage_groq(frage):
+    antwort_groq = groq_client.chat.completions.create(
+        model="openai/gpt-oss-20b",
+        messages=[{"role": "user", "content": frage }]
+    )
+    return antwort_groq.choices[0].message.content
 
-print(antwort_groq.choices[0].message.content)
+ergebniss_groq = frage_groq(input("Deine Frage: "))
+print(ergebniss_groq)
 
 
 #                                  Gemini Client
 from google import genai
-
 gemini_client = genai.Client(api_key=gemini_key)
 
-antwort_gemini = gemini_client.models.generate_content(
-    model="gemini-3.7-flash",
-    contents=input("Deine Frage: ")
-)
+def frage_gemini(frage):
+    antwort_gemini = gemini_client.models.generate_content(
+        model="gemini-3.7-flash",
+        contents=frage
+    )
+    return antwort_gemini.text
 
-print(antwort_gemini.text)
+ergebniss_gemini = frage_gemini(input("Deine Frage: "))
+print(ergebniss_gemini)
