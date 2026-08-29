@@ -20,38 +20,40 @@ if gemini_key is None:
 else: 
     print("Gemini is loaded")
 
-#                                            Conection of the two clients
-nutzfrage = input("Deine eingabe: ")
+while True:
+    #                                            Conection of the two clients
+    nutzfrage = input("Deine eingabe: ")
+    if nutzfrage == "exit": break
 
-#                                                   Groq Client
-groq_client = Groq(api_key=groq_key)
+    #                                                   Groq Client
+    groq_client = Groq(api_key=groq_key)
 
-def frage_groq(frage):
-    antwort_groq = groq_client.chat.completions.create(
-        model="openai/gpt-oss-20b",
-        messages=[{"role": "user", "content": frage }]
-    )
-    return antwort_groq.choices[0].message.content
+    def frage_groq(frage):
+        antwort_groq = groq_client.chat.completions.create(
+            model="openai/gpt-oss-20b",
+            messages=[{"role": "user", "content": frage }]
+        )
+        return antwort_groq.choices[0].message.content
 
-ergebniss_groq = frage_groq(nutzfrage)
-print(ergebniss_groq)
+    ergebniss_groq = frage_groq(nutzfrage)
+    print(ergebniss_groq)
 
 
-#                                                Gemini Client
-gemini_client = genai.Client(api_key=gemini_key)
+    #                                                Gemini Client
+    gemini_client = genai.Client(api_key=gemini_key)
 
-def frage_gemini(frage):
-    antwort_gemini = gemini_client.models.generate_content(
-        model="gemini-3.6-flash",
-        contents=frage
-    )
-    return antwort_gemini.text
+    def frage_gemini(frage):
+        antwort_gemini = gemini_client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=frage
+        )
+        return antwort_gemini.text
 
-ergebniss_gemini = frage_gemini(nutzfrage)
-print(ergebniss_gemini)
+    ergebniss_gemini = frage_gemini(nutzfrage)
+    print(ergebniss_gemini)
 
-#                                       Conection Prompt
-zusammenfassung_prompt = f"Fasse diese zwei Antworten zusammen: 1) {ergebniss_groq} 2) {ergebniss_gemini}"
+    #                                       Conection Prompt
+    zusammenfassung_prompt = f"Fasse diese zwei Antworten zusammen: 1) {ergebniss_groq} 2) {ergebniss_gemini}"
 
-antwort_zusammenfassung = frage_groq(zusammenfassung_prompt)
-print(antwort_zusammenfassung)
+    antwort_zusammenfassung = frage_groq(zusammenfassung_prompt)
+    print(antwort_zusammenfassung)
