@@ -53,23 +53,23 @@ while True:
     try:
         ergebniss_groq = frage_groq(nutzfrage)
     except groq.APIError:
-        ergebniss_groq = "Groq ist gerade nicht erreichbar"
+        ergebniss_groq = None
 
     try:
         ergebniss_gemini = frage_gemini(nutzfrage)
     except errors.ServerError:
-        ergebniss_gemini = "Gemini ist gerade nicht erreichbar"
+        ergebniss_gemini = None
 
     #                                       Conection Prompt
-    if ergebniss_groq != "Groq ist gerade nicht erreichbar" and ergebniss_gemini != "Gemini ist gerade nicht erreichbar":
+    if ergebniss_groq is not None and ergebniss_gemini is not None:
         zusammenfassung_prompt = f"Fasse diese zwei Antworten zusammen: 1) {ergebniss_groq} 2) {ergebniss_gemini}"
         antwort_zusammenfassung = frage_groq(zusammenfassung_prompt)
         print(antwort_zusammenfassung)
 
-    elif ergebniss_groq != "Groq ist gerade nicht erreichbar" and ergebniss_gemini == "Gemini ist gerade nicht erreichbar":
+    elif ergebniss_groq is not None and ergebniss_gemini is None:
         print(ergebniss_groq)
 
-    elif ergebniss_groq == "Groq ist gerade nicht erreichbar" and ergebniss_gemini != "Gemini ist gerade nicht erreichbar":
+    elif ergebniss_groq is None and ergebniss_gemini is not None:
         print(ergebniss_gemini)
 
     else: print("Beide KIs sind gerade nicht erreichbar, versuch´s später nochmal.")
