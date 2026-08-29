@@ -45,6 +45,9 @@ def frage_gemini(frage):
     )
     return antwort_gemini.text
 
+#                                                       Greeting
+print("Heyo, was gehen wir Heute an? (Zum Beenden tippe: exit)")
+
      #                                            Conection of the two clients
 while True:    
     nutzfrage = input("Deine eingabe: ")
@@ -64,12 +67,17 @@ while True:
     if ergebniss_groq is not None and ergebniss_gemini is not None:
         zusammenfassung_prompt = f"Fasse diese zwei Antworten zusammen: 1) {ergebniss_groq} 2) {ergebniss_gemini}"
         antwort_zusammenfassung = frage_groq(zusammenfassung_prompt)
-        print(antwort_zusammenfassung)
+        print("-" * 40)
+        print("Ghost sagt: ",antwort_zusammenfassung)
 
     elif ergebniss_groq is not None and ergebniss_gemini is None:
-        print(ergebniss_groq)
+        print("-" * 40)
+        print("Ghost sagt: ","Gemini ist ausgefallen. Hier ist die Antwort von Groq: ",ergebniss_groq)
 
     elif ergebniss_groq is None and ergebniss_gemini is not None:
-        print(ergebniss_gemini)
+        print("-" * 40)
+        print("Ghost sagt: ","Groq ist ausgefallen. Hier ist die Antwort von Gemini: ",ergebniss_gemini)
 
-    else: print("Beide KIs sind gerade nicht erreichbar, versuch´s später nochmal.")
+    else:
+        print("-" * 40)
+        print("Ghost sagt: ","Sorry, beide KIs sind gerade nicht erreichbar, versuch´s später nochmal.")
