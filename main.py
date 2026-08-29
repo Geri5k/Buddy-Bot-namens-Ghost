@@ -1,6 +1,8 @@
 #                                   Imports
 from google import genai
+from google.genai import errors
 from groq import Groq
+import groq
 import os
 from dotenv import load_dotenv
 #                                   Conection Test
@@ -48,13 +50,26 @@ while True:
     nutzfrage = input("Deine eingabe: ")
     if nutzfrage == "exit": break
 
-    ergebniss_groq = frage_groq(nutzfrage)
-    ergebniss_gemini = frage_gemini(nutzfrage)
+    try:
+        ergebniss_groq = frage_groq(nutzfrage)
+    except groq.APIError:
+        ergebniss_groq = "Groq ist gerade nicht erreichbar"
+
+    try:
+        ergebniss_gemini = frage_gemini(nutzfrage)
+    except errors.ServerError:
+        ergebniss_gemini = "Gemini ist gerade nicht erreichbar"
 
     #                                       Conection Prompt
-    zusammenfassung_prompt = f"Fasse diese zwei Antworten zusammen: 1) {ergebniss_groq} 2) {ergebniss_gemini}"
+    if ergebniss_groq != "Groq ist gerade nicht erreichbar" and ergebniss_gemini != "Gemini ist gerade nicht erreichbar":
+        zusammenfassung_prompt = f"Fasse diese zwei Antworten zusammen: 1) {ergebniss_groq} 2) {ergebniss_gemini}"
+        antwort_zusammenfassung = frage_groq(zusammenfassung_prompt)
+        print(antwort_zusammenfassung)
 
-    antwort_zusammenfassung = frage_groq(zusammenfassung_prompt)
-    print(antwort_zusammenfassung)
+    elif ergebniss_groq != "Groq ist gerade nicht erreichbar" and ergebniss_gemini == "Gemini ist gerade nicht erreichbar":
+        print(ergebniss_groq)
 
+    elif ergebniss_groq == "Groq ist gerade nicht erreichbar" and ergebniss_gemini != "Gemini ist gerade nicht erreichbar":
+        print(ergebniss_gemini)
 
+    else: print("Beide KIs sind gerade nicht erreichbar, versuch´s später nochmal.")
