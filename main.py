@@ -35,7 +35,7 @@ def frage_gemini(frage):
     return antwort_gemini.text
 
 #                                                       Greeting
-print("Heyo, was gehen wir Heute an? (Zum Beenden tippe: exit, Verlauf anzeigen: verlauf)")
+print("Heyo, was gehen wir Heute an? (Zum Beenden tippe: exit, Weitere Befehle: befehle)")
 
 #                                                       Memory
 verlauf = []
@@ -44,14 +44,24 @@ verlauf = []
 while True: 
     print("-" * 40)   
     nutzfrage = input("Deine eingabe: ")
-    kontext_frage = f"Bisheriger Gesprächsverlauf:\n{'\n'.join(verlauf)}\n\nNeue Frage: {nutzfrage}"
     if nutzfrage == "exit": break
+
+    if nutzfrage == "befehle":
+        print("Verlauf anzeigen: verlauf\nVerlauf löschen: löschen")
+        continue
+
+    if nutzfrage == "löschen":
+        verlauf = []
+        print("Verlauf wurde gelöscht.")
+        continue
 
     if nutzfrage == "verlauf": 
         for verlauf_item in verlauf:
             print("-" * 40)
             print(verlauf_item)
         continue 
+
+    kontext_frage = f"Bisheriger Gesprächsverlauf:\n{'\n'.join(verlauf)}\n\nNeue Frage: {nutzfrage}"
 
     try:
         ergebniss_groq = frage_groq(kontext_frage)
