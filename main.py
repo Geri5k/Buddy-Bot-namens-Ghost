@@ -5,7 +5,9 @@ from groq import Groq
 import groq
 import os
 from dotenv import load_dotenv
+from colorama import Fore, Style, init
 
+init()
 load_dotenv()
 
 groq_key = os.getenv("GROQ_API_KEY")
@@ -35,19 +37,18 @@ def frage_gemini(frage):
     return antwort_gemini.text
 
 #                                                       Greeting
-print("Heyo, was gehen wir Heute an? (Zum Beenden tippe: exit, Weitere Befehle: befehle)")
-
+print(f"{Fore.GREEN}Ghost grüßt: {Style.RESET_ALL}Heyo, was gehen wir Heute an? (Zum Beenden tippe: {Fore.YELLOW}exit,{Style.RESET_ALL} Weitere Befehle: {Fore.YELLOW}befehle{Style.RESET_ALL})")
 #                                                       Memory
 verlauf = []
 
      #                                            The Task
 while True: 
     print("-" * 40)   
-    nutzfrage = input("Deine eingabe: ")
+    nutzfrage = input(f"{Fore.CYAN}Deine eingabe:{Style.RESET_ALL} ")
     if nutzfrage == "exit": break
 
     if nutzfrage == "befehle":
-        print("Verlauf anzeigen: verlauf\nVerlauf löschen: löschen")
+        print(f"Verlauf anzeigen: {Fore.YELLOW}verlauf\n{Style.RESET_ALL}Verlauf löschen:{Fore.YELLOW} löschen{Style.RESET_ALL}")
         continue
 
     if nutzfrage == "löschen":
@@ -55,10 +56,13 @@ while True:
         print("Verlauf wurde gelöscht.")
         continue
 
-    if nutzfrage == "verlauf": 
-        for verlauf_item in verlauf:
-            print("-" * 40)
-            print(verlauf_item)
+    if nutzfrage == "verlauf":
+        if verlauf:
+            for verlauf_item in verlauf:
+                print("-" * 40)
+                print(verlauf_item)
+        else: 
+            print(f"Du hast noch keinen Verlauf")
         continue 
 
     kontext_frage = f"Bisheriger Gesprächsverlauf:\n{'\n'.join(verlauf)}\n\nNeue Frage: {nutzfrage}"
@@ -78,20 +82,20 @@ while True:
         zusammenfassung_prompt = f"Fasse diese zwei Antworten zusammen: 1) {ergebniss_groq} 2) {ergebniss_gemini}"
         antwort_zusammenfassung = frage_groq(zusammenfassung_prompt)
         print("-" * 40)
-        bot_antwort = (f"Ghost sagt: {antwort_zusammenfassung}")
+        bot_antwort = (f"{antwort_zusammenfassung}")
 
     elif ergebniss_groq is not None and ergebniss_gemini is None:
         print("-" * 40)
-        bot_antwort = (f"Ghost sagt: Gemini ist ausgefallen. Hier ist die Antwort von Groq: {ergebniss_groq}")
+        bot_antwort = (f"Gemini ist ausgefallen. Hier ist die Antwort von Groq: {ergebniss_groq}")
 
     elif ergebniss_groq is None and ergebniss_gemini is not None:
         print("-" * 40)
-        bot_antwort = (f"Ghost sagt: Groq ist ausgefallen. Hier ist die Antwort von Gemini: {ergebniss_gemini}")
+        bot_antwort = (f"Groq ist ausgefallen. Hier ist die Antwort von Gemini: {ergebniss_gemini}")
 
     else:
         print("-" * 40)
-        bot_antwort = (f"Ghost sagt: Sorry, beide KIs sind gerade nicht erreichbar, versuch´s später nochmal.")
+        bot_antwort = (f"Sorry, beide KIs sind gerade nicht erreichbar, versuch´s später nochmal.")
 
-    print(bot_antwort)
+    print(f"{Fore.GREEN}Ghost sagt:{Style.RESET_ALL} {bot_antwort}")
 #                                   Conection to Memory
     verlauf.append(f"Nutzer: {nutzfrage}\nGhost: {bot_antwort}")
